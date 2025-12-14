@@ -27,6 +27,11 @@ const Student = sequelize.define("Student", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+
+  isDeleted: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
 });
 
 export default Student;

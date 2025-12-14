@@ -8,7 +8,7 @@ import schoolRoutes from "./routes/school.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import studentRoutes from "./routes/student.routes.js";
 import { seedSuperAdmin } from "./seed/seedSuperAdmin.js";
-import errorHandler from './middlewares/error.middleware.js'
+import { errorHandler } from "./middlewares/error.middleware.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;

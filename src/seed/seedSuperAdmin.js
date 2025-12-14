@@ -20,6 +20,9 @@ export const seedSuperAdmin = async () => {
     phone: "9999999999",
     password_hash: hash,
     role: "superadmin",
+    mustChangePassword: false,
+    resetPasswordToken: null,
+    resetPasswordExpires: null,
   });
 
   console.log("Superadmin created");

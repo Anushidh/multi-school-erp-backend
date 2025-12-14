@@ -1,6 +1,9 @@
 import express from "express";
 import auth from "../middlewares/auth.middleware.js";
 import validate from "../middlewares/validate.middleware.js";
+import { requireSameSchoolOrSuperAdmin } from "../middlewares/school.middleware.js";
+import { requireStudentWriteAccess } from "../middlewares/student.middleware.js";
+
 import {
   createStudentSchema,
   updateStudentSchema,
@@ -16,24 +19,48 @@ import {
 
 const router = express.Router();
 
+/* CREATE student */
 router.post(
   "/schools/:schoolId/students",
   auth,
+  requireSameSchoolOrSuperAdmin("schoolId"),
+  requireStudentWriteAccess,
   validate(createStudentSchema),
   createStudent
 );
 
-router.get("/schools/:schoolId/students", auth, getStudents);
+/* READ students */
+router.get(
+  "/schools/:schoolId/students",
+  auth,
+  requireSameSchoolOrSuperAdmin("schoolId"),
+  getStudents
+);
 
-router.get("/schools/:schoolId/students/:id", auth, getStudentById);
-
-router.put(
+router.get(
   "/schools/:schoolId/students/:id",
   auth,
+  requireSameSchoolOrSuperAdmin("schoolId"),
+  getStudentById
+);
+
+/* UPDATE student */
+router.patch(
+  "/schools/:schoolId/students/:id",
+  auth,
+  requireSameSchoolOrSuperAdmin("schoolId"),
+  requireStudentWriteAccess,
   validate(updateStudentSchema),
   updateStudent
 );
 
-router.delete("/schools/:schoolId/students/:id", auth, deleteStudent);
+/* DELETE student */
+router.delete(
+  "/schools/:schoolId/students/:id",
+  auth,
+  requireSameSchoolOrSuperAdmin("schoolId"),
+  requireStudentWriteAccess,
+  deleteStudent
+);
 
 export default router;

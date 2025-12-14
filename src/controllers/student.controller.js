@@ -1,114 +1,107 @@
 import Student from "../models/Student.js";
+import { catchAsync } from "../utils/catchAsync.util.js";
+import { AppError } from "../utils/AppError.util.js";
+import AuditLog from "../models/AuditLog.js";
 
-const checkSchoolAccess = (req, schoolId) => {
-  if (req.user.role === "superadmin") return true;
-  return Number(req.user.schoolId) === Number(schoolId);
-};
-
-const canWrite = (req) => {
-  return (
-    req.user.role === "superadmin" ||
-    req.user.role === "admin" ||
-    req.user.canEditStudents === true
-  );
-};
-
-export const createStudent = async (req, res) => {
+/* CREATE STUDENT */
+export const createStudent = catchAsync(async (req, res) => {
   const { schoolId } = req.params;
-
-  if (!checkSchoolAccess(req, schoolId)) {
-    return res.status(403).json({ message: "Cross-school access denied" });
-  }
-
-  if (!canWrite(req)) {
-    return res.status(403).json({ message: "No edit permission" });
-  }
 
   const student = await Student.create({
     ...req.body,
     schoolId,
     createdBy: req.user.userId,
   });
-
+  await AuditLog.create({
+    actorId: req.user.userId,
+    entity: "Student",
+    entityId: student.id,
+    action: "CREATE",
+    before: null,
+    after: student.toJSON(),
+  });
   res.status(201).json(student);
-};
+});
 
-export const getStudents = async (req, res) => {
+/* LIST STUDENTS */
+export const getStudents = catchAsync(async (req, res) => {
   const { schoolId } = req.params;
 
-  if (!checkSchoolAccess(req, schoolId)) {
-    return res.status(403).json({ message: "Cross-school access denied" });
-  }
-
   const students = await Student.findAll({
-    where: { schoolId },
+    where: { schoolId, isDeleted: false },
   });
 
   res.json(students);
-};
+});
 
-export const getStudentById = async (req, res) => {
+/* GET STUDENT BY ID */
+export const getStudentById = catchAsync(async (req, res) => {
   const { schoolId, id } = req.params;
 
-  if (!checkSchoolAccess(req, schoolId)) {
-    return res.status(403).json({ message: "Cross-school access denied" });
-  }
-
   const student = await Student.findOne({
-    where: { id, schoolId },
+    where: { id, schoolId, isDeleted: false },
   });
 
   if (!student) {
-    return res.status(404).json({ message: "Student not found" });
+    throw new AppError("Student not found", 404);
   }
 
   res.json(student);
-};
+});
 
-export const updateStudent = async (req, res) => {
+/* UPDATE STUDENT */
+export const updateStudent = catchAsync(async (req, res) => {
   const { schoolId, id } = req.params;
 
-  if (!checkSchoolAccess(req, schoolId)) {
-    return res.status(403).json({ message: "Cross-school access denied" });
-  }
-
-  if (!canWrite(req)) {
-    return res.status(403).json({ message: "No edit permission" });
-  }
-
   const student = await Student.findOne({
-    where: { id, schoolId },
+    where: { id, schoolId, isDeleted: false },
   });
 
   if (!student) {
-    return res.status(404).json({ message: "Student not found" });
+    throw new AppError("Student not found", 404);
   }
+  const before = student.toJSON();
 
   await student.update(req.body);
 
-  res.json({ message: "Student updated" });
-};
+  await AuditLog.create({
+    actorId: req.user.userId,
+    entity: "Student",
+    entityId: student.id,
+    action: "UPDATE",
+    before,
+    after: student.toJSON(),
+  });
 
-export const deleteStudent = async (req, res) => {
+  res.json({
+    message: "Student updated successfully",
+  });
+});
+
+/* DELETE STUDENT */
+export const deleteStudent = catchAsync(async (req, res) => {
   const { schoolId, id } = req.params;
 
-  if (!checkSchoolAccess(req, schoolId)) {
-    return res.status(403).json({ message: "Cross-school access denied" });
-  }
-
-  if (!canWrite(req)) {
-    return res.status(403).json({ message: "No edit permission" });
-  }
-
   const student = await Student.findOne({
-    where: { id, schoolId },
+    where: { id, schoolId, isDeleted: false },
   });
 
   if (!student) {
-    return res.status(404).json({ message: "Student not found" });
+    throw new AppError("Student not found", 404);
   }
+  const before = student.toJSON();
+  // await student.destroy();
+  await student.update({ isDeleted: true });
 
-  await student.destroy();
-
-  res.json({ message: "Student deleted" });
-};
+  await AuditLog.create({
+    actorId: req.user.userId,
+    entity: "Student",
+    entityId: student.id,
+    action: "DELETE",
+    before,
+    after: { isDeleted: true },
+  });
+  res.json({
+    message: "Student deleted successfully",
+  });
+});

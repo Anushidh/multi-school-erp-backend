@@ -1,25 +1,27 @@
 import School from "../models/School.js";
+import { catchAsync } from "../utils/catchAsync.util.js";
+import { AppError } from "../utils/AppError.util.js";
 
-export const createSchool = async (req, res) => {
+export const createSchool = catchAsync(async (req, res) => {
   const { name } = req.body;
 
   const school = await School.create({ name });
 
   res.status(201).json(school);
-};
+});
 
-export const getAllSchools = async (req, res) => {
+export const getAllSchools = catchAsync(async (req, res) => {
   const schools = await School.findAll();
   res.json(schools);
-};
+});
 
-export const getSchoolById = async (req, res) => {
+export const getSchoolById = catchAsync(async (req, res) => {
   const { id } = req.params;
 
   const school = await School.findByPk(id);
   if (!school) {
-    return res.status(404).json({ message: "School not found" });
+    throw new AppError("School not found", 404);
   }
 
   res.json(school);
-};
+});

@@ -1,20 +1,25 @@
 import jwt from "jsonwebtoken";
+import { AppError } from "../utils/AppError.util.js";
 
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Unauthorized" });
+    throw new AppError("Unauthorized", 401);
   }
 
   const token = authHeader.split(" ")[1];
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // { userId, role, schoolId }
+    console.log("decoded: ", decoded)
+    req.user = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Invalid or expired token" });
+    if (err.name === "TokenExpiredError") {
+      throw new AppError("Access token expired", 401);
+    }
+    throw new AppError("Invalid access token", 401);
   }
 };
 

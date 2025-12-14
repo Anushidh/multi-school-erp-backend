@@ -1,0 +1,568 @@
+{
+	"info": {
+		"_postman_id": "4035cb2a-5242-48e5-8475-a551ef41239d",
+		"name": "Multi-School ERP API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32384486"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"console.log(pm.environment.get(\"baseUrl\"));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"superadmin@erp.com\",\r\n    \"password\": \"Admin@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login endpoint.\r\n- Returns access token in response\r\n- Sets refreshToken as httpOnly cookie\r\n- Token must be used in Authorization header for protected routes\r\n"
+					},
+					"response": []
+				},
+				{
+					"name": "refresh",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/refresh",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "Refresh access token using the refresh token stored in an httpOnly cookie.\n\nFlow:\n\n1. User logs in via /auth/login\n    \n2. Server sets refreshToken as httpOnly cookie\n    \n3. This endpoint verifies the refresh token and issues a new access token"
+					},
+					"response": []
+				},
+				{
+					"name": "reset-password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"b4efddc33287e73c5392d609a5ada14b59cc230ef48b0a9b5c6a1e6ddce0026a\",\r\n    \"newPassword\": \"User@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/reset-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						},
+						"description": "Resets a user’s password using a time-limited reset token.\n\nFlow:\n\n1. User is created with a temporary password\n    \n2. A password reset token is generated and sent via email\n    \n3. This endpoint validates the token and updates the password\n    \n\nNotes:\n\n- Token expires after a short duration\n    \n- Token is invalidated after successful reset\n    \n- User is allowed to log in only after resetting the password"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Schools",
+			"item": [
+				{
+					"name": "Create School",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlcmFkbWluIiwic2Nob29sSWQiOm51bGwsImlhdCI6MTc2NTY5MTg3OSwiZXhwIjoxNzY1NjkyNzc5fQ.XxqvzLlVXWccTe-qxywWjVduOOglFX5zWHi35zIU1EI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"ABC Public School\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/schools",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"schools"
+							]
+						},
+						"description": "Create a new school.\n\nAccess:\n\n- Superadmin only\n    \n\nNotes:\n\n- Requires valid JWT in Authorization header\n    \n- Request body validated using Joi"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Schools",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlcmFkbWluIiwic2Nob29sSWQiOm51bGwsImlhdCI6MTc2NTY5MjEyMCwiZXhwIjoxNzY1NjkzMDIwfQ.QQ9iA5LId7c7xFFHcWdy6xcUbdTtbbNPD8gbORYVxeg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/schools",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"schools"
+							]
+						},
+						"description": "Fetch all schools in the system.\n\nAccess:\n\n- Superadmin only\n    \n\nReturns:\n\n- List of all schools"
+					},
+					"response": []
+				},
+				{
+					"name": "Get School By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlcmFkbWluIiwic2Nob29sSWQiOm51bGwsImlhdCI6MTc2NTY5MjEyMCwiZXhwIjoxNzY1NjkzMDIwfQ.QQ9iA5LId7c7xFFHcWdy6xcUbdTtbbNPD8gbORYVxeg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/schools/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"schools",
+								"1"
+							]
+						},
+						"description": "Fetch a school by its ID.\n\nAccess:\n\n- Superadmin only\n    \n\nReturns 404 if the school does not exist."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlcmFkbWluIiwic2Nob29sSWQiOm51bGwsImlhdCI6MTc2NTY5ODI4NiwiZXhwIjoxNzY1Njk5MTg2fQ.fb9CtQop9fDPI3eUS0qeX5m6yzU7kSegkRVSAetLv-k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"John Doe\",\r\n    \"email\": \"john@school.com\",\r\n    \"phone\": \"9876543210\",\r\n    \"role\": \"user\",\r\n    \"canEditStudents\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/schools/1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"schools",
+								"1",
+								"users"
+							]
+						},
+						"description": "Create a user under a specific school.\n\nAccess:\n\n- Superadmin can create users for any school\n    \n- Admin can create users only within their own school\n    \n\nNotes:\n\n- Password is auto-generated and emailed to the user\n    \n- Password hash is never returned in the response"
+					},
+					"response": []
+				},
+				{
+					"name": "List Users by School",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlcmFkbWluIiwic2Nob29sSWQiOm51bGwsImlhdCI6MTc2NTY5ODQxNSwiZXhwIjoxNzY1Njk5MzE1fQ.zQ_U8nridARh-2lej4wCY0Rtobk1q0CGfGy5KeH2EyQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/schools/1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"schools",
+								"1",
+								"users"
+							]
+						},
+						"description": "List all users belonging to a specific school.\n\nAccess:\n\n- Superadmin: any school\n    \n- Admin: only their own school\n    \n\nNotes:\n\n- Soft-deleted users are excluded\n    \n- Password fields are not returned"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlcmFkbWluIiwic2Nob29sSWQiOm51bGwsImlhdCI6MTc2NTY5ODQxNSwiZXhwIjoxNzY1Njk5MzE1fQ.zQ_U8nridARh-2lej4wCY0Rtobk1q0CGfGy5KeH2EyQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/users/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"2"
+							]
+						},
+						"description": "Fetch a user's profile by ID.\n\nAccess:\n\n- The user themselves\n    \n- Admin of the same school\n    \n- Superadmin\n    \n\nNotes:\n\n- Access is determined based on ownership and school scope\n    \n- Sensitive fields like password hash are excluded"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlcmFkbWluIiwic2Nob29sSWQiOm51bGwsImlhdCI6MTc2NTY5ODk0NiwiZXhwIjoxNzY1Njk5ODQ2fQ.JQc4Td1UOcybRNzoVuTSB04TehrrIFFvWhV079dULlQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"John Updated\",\r\n    \"phone\": \"9999999999\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/users/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"2"
+							]
+						},
+						"description": "Update a user's profile.\n\nAccess rules:\n\n- User: can update own basic info\n    \n- Admin: can update student edit permissions for users in same school\n    \n- Superadmin: can update most fields except password\n    \n\nNotes:\n\n- Role and school reassignment are restricted for non-superadmin users\n    \n- Password updates are not allowed via this endpoint"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Students",
+			"item": [
+				{
+					"name": "Create Student",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlcmFkbWluIiwic2Nob29sSWQiOm51bGwsImlhdCI6MTc2NTcwMDcxOCwiZXhwIjoxNzY1NzAxNjE4fQ.YNDTxjln6eZ3lAYdnfnt-PC0S-8L_YJeskgNv0AsOEo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Alice Johnson\",\r\n    \"dob\": \"2010-06-15\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/schools/1/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"schools",
+								"1",
+								"students"
+							]
+						},
+						"description": "Create a student under a specific school.\n\nAccess:\n\n- Superadmin\n    \n- Admin of the same school\n    \n- Users with canEditStudents permission\n    \n\nNotes:\n\n- Student is always scoped to the school in the URL\n    \n- createdBy is derived from the authenticated user"
+					},
+					"response": []
+				},
+				{
+					"name": "List Students",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlcmFkbWluIiwic2Nob29sSWQiOm51bGwsImlhdCI6MTc2NTcwMDcxOCwiZXhwIjoxNzY1NzAxNjE4fQ.YNDTxjln6eZ3lAYdnfnt-PC0S-8L_YJeskgNv0AsOEo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/schools/1/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"schools",
+								"1",
+								"students"
+							]
+						},
+						"description": "List all students belonging to a specific school.\n\nAccess:\n\n- Superadmin\n    \n- Admin of the same school\n    \n- Users of the same school (read-only access)\n    \n\nNotes:\n\n- Students are scoped strictly by schoolId"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Student By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlcmFkbWluIiwic2Nob29sSWQiOm51bGwsImlhdCI6MTc2NTcwMDcxOCwiZXhwIjoxNzY1NzAxNjE4fQ.YNDTxjln6eZ3lAYdnfnt-PC0S-8L_YJeskgNv0AsOEo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/schools/1/students/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"schools",
+								"1",
+								"students",
+								"1"
+							]
+						},
+						"description": "Fetch a single student by ID.\n\nAccess:\n\n- Superadmin\n    \n- Admin of the same school\n    \n- Users of the same school\n    \n\nNotes:\n\n- Returns 404 if the student does not exist in the given school"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Student",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInJvbGUiOiJhZG1pbiIsInNjaG9vbElkIjoxLCJpYXQiOjE3NjU3Mzg3NzIsImV4cCI6MTc2NTczOTY3Mn0.DkT-hGqkqp01FqJpCSJCCxwoxIL0CrJp41XdcaDhjTo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Rahul J.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/schools/1/students/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"schools",
+								"1",
+								"students",
+								"2"
+							]
+						},
+						"description": "Update student details.\n\nAccess:\n\n- Superadmin\n    \n- Admin of the same school\n    \n- Users with canEditStudents permission\n    \n\nNotes:\n\n- Partial updates supported (PATCH semantics)\n    \n- Read-only users are not allowed"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Student",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlcmFkbWluIiwic2Nob29sSWQiOm51bGwsImlhdCI6MTc2NTcwMjI4NSwiZXhwIjoxNzY1NzAzMTg1fQ.GcegdG4xsRUwc4pxBpUpdW8THe69uB4IIOK3aE-xAIE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/schools/1/students/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"schools",
+								"1",
+								"students",
+								"1"
+							]
+						},
+						"description": "Delete a student.\n\nAccess:\n\n- Superadmin\n    \n- Admin of the same school\n    \n- Users with canEditStudents permission\n    \n\nNotes:\n\n- Operation is strictly scoped to the school"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -14,10 +14,8 @@ export const loadTargetUser = catchAsync(async (req, res, next) => {
 export const requireUserAccess = (req, res, next) => {
   const { user, targetUser } = req;
 
-  // Own profile
   if (user.userId === targetUser.id) return next();
 
-  // Admin – same school
   if (
     user.role === "admin" &&
     Number(user.schoolId) === Number(targetUser.schoolId)
@@ -25,7 +23,6 @@ export const requireUserAccess = (req, res, next) => {
     return next();
   }
 
-  // Superadmin
   if (user.role === "superadmin") return next();
 
   throw new AppError("Access denied", 403);

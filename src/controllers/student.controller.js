@@ -3,7 +3,7 @@ import { catchAsync } from "../utils/catchAsync.util.js";
 import { AppError } from "../utils/AppError.util.js";
 import AuditLog from "../models/AuditLog.js";
 
-/* CREATE STUDENT */
+
 export const createStudent = catchAsync(async (req, res) => {
   const { schoolId } = req.params;
 
@@ -23,7 +23,7 @@ export const createStudent = catchAsync(async (req, res) => {
   res.status(201).json(student);
 });
 
-/* LIST STUDENTS */
+
 export const getStudents = catchAsync(async (req, res) => {
   const { schoolId } = req.params;
 
@@ -34,7 +34,7 @@ export const getStudents = catchAsync(async (req, res) => {
   res.json(students);
 });
 
-/* GET STUDENT BY ID */
+
 export const getStudentById = catchAsync(async (req, res) => {
   const { schoolId, id } = req.params;
 
@@ -49,7 +49,7 @@ export const getStudentById = catchAsync(async (req, res) => {
   res.json(student);
 });
 
-/* UPDATE STUDENT */
+
 export const updateStudent = catchAsync(async (req, res) => {
   const { schoolId, id } = req.params;
 
@@ -78,7 +78,7 @@ export const updateStudent = catchAsync(async (req, res) => {
   });
 });
 
-/* DELETE STUDENT */
+
 export const deleteStudent = catchAsync(async (req, res) => {
   const { schoolId, id } = req.params;
 

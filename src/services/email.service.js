@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
-import dotenv from "dotenv";
-dotenv.config();
+// import dotenv from "dotenv";
+// dotenv.config();
 
 export const sendUserPassword = async (email, password, resetLink) => {
   const transporter = nodemailer.createTransport({

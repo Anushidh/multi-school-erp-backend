@@ -6,39 +6,6 @@ import { sendUserPassword } from "../services/email.service.js";
 import { catchAsync } from "../utils/catchAsync.util.js";
 import { AppError } from "../utils/AppError.util.js";
 
-// export const createUser = catchAsync(async (req, res) => {
-//   const { schoolId } = req.params;
-//   const { name, email, phone, role, canEditStudents } = req.body;
-
-//   if (req.user.role === "admin" && role === "admin") {
-//     throw new AppError("Admin cannot create another admin", 403);
-//   }
-
-//   const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-//   const rawPassword = generatePassword(phone, name, date);
-//   const password_hash = await bcrypt.hash(rawPassword, 10);
-
-//   const user = await User.create({
-//     name,
-//     email,
-//     phone,
-//     role,
-//     canEditStudents,
-//     schoolId,
-//     password_hash,
-//   });
-
-//   await sendUserPassword(email, rawPassword);
-
-//   res.status(201).json({
-//     id: user.id,
-//     name: user.name,
-//     email: user.email,
-//     role: user.role,
-//     schoolId: user.schoolId,
-//     canEditStudents: user.canEditStudents,
-//   });
-// });
 
 export const createUser = catchAsync(async (req, res) => {
   const { schoolId } = req.params;
